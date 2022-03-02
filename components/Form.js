@@ -7,21 +7,18 @@
 // --------------------------------------------------------------------------- //
 
 // REACT
-import React, { useState } from "react";
+import { useState } from "react";
+import * as React from "react";
 // REACT-NATIVE
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
-import Modal from "react-native-modal";
+import { StyleSheet, Text, View, Button, TextInput, Alert } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // FORM
 import { Formik } from "formik";
 import * as yup from "yup";
 
-export default function Form() {
+export default function Form({ navigation }) {
   const [isLogged, setIsLogged] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
 
   const reviewSchema = yup.object({
     email: yup
@@ -36,30 +33,36 @@ export default function Form() {
     console.log(data);
     setIsLogged((prev) => !prev);
     console.log(setIsLogged);
-    toggleModal();
-    console.log(isModalVisible);
-    return isLogged ? (
-      <Modal isVisible={isModalVisible}>
-        <View style={{ flex: 1 }}>
-          <Text>Connected!</Text>
-          <Text>Welcome</Text>
-          <Button title="Hide modal" onPress={toggleModal} />
-        </View>
-      </Modal>
-    ) : (
-      <Modal isVisible={isModalVisible}>
-        <View style={{ flex: 1 }}>
-          <Text>Disconnected!</Text>
-          <Text>See you soon!</Text>
-          <Button title="Hide modal" onPress={toggleModal} />
-        </View>
-      </Modal>
-    );
+    Alert.alert("Connected", "Welcome!", [
+      {
+        text: "Home",
+        onPress: () => {
+          console.log("OK Pressed");
+          navigation.navigate("Home");
+        },
+      },
+      {
+        text: "Disconnect",
+        onPress: () => {
+          console.log("Disconnect Pressed");
+          setIsLogged((prev) => !prev);
+          navigation.navigate("Login");
+        },
+        style: "cancel",
+      },
+    ]);
   };
 
   return isLogged ? (
     <View style={styles.centeredView}>
-      <Button title="Disconnect" color="red" onPress={onSubmit} />
+      <Button
+        title="Disconnect"
+        color="red"
+        onPress={() => {
+          setIsLogged((prev) => !prev);
+          navigation.navigate("Login");
+        }}
+      />
     </View>
   ) : (
     <>
@@ -69,7 +72,7 @@ export default function Form() {
             initialValues={{ email: "", password: "" }}
             validationSchema={reviewSchema}
             onSubmit={(values) => {
-              console.log(values);
+              onSubmit(values);
             }}
           >
             {(props) => (
@@ -123,6 +126,8 @@ export default function Form() {
     </>
   );
 }
+
+// CSS PART
 
 const styles = StyleSheet.create({
   centeredView: {

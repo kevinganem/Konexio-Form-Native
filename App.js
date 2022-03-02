@@ -7,21 +7,26 @@
 // --------------------------------------------------------------------------- //
 
 // REACT
-import React from "react";
-
+import * as React from "react";
 // REACT-NATIVE
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// VIEWS
+import Home from "./views/Home";
+import Login from "./views/Login";
 
-// COMPONENTS
-import Form from "./components/Form";
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <Form />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Login" component={Login} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
