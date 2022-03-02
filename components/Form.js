@@ -10,12 +10,18 @@
 import React, { useState } from "react";
 // REACT-NATIVE
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import Modal from "react-native-modal";
 // FORM
 import { Formik } from "formik";
 import * as yup from "yup";
 
 export default function Form() {
   const [isLogged, setIsLogged] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   const reviewSchema = yup.object({
     email: yup
@@ -29,11 +35,31 @@ export default function Form() {
   const onSubmit = (data) => {
     console.log(data);
     setIsLogged((prev) => !prev);
+    console.log(setIsLogged);
+    toggleModal();
+    console.log(isModalVisible);
+    return isLogged ? (
+      <Modal isVisible={isModalVisible}>
+        <View style={{ flex: 1 }}>
+          <Text>Connected!</Text>
+          <Text>Welcome</Text>
+          <Button title="Hide modal" onPress={toggleModal} />
+        </View>
+      </Modal>
+    ) : (
+      <Modal isVisible={isModalVisible}>
+        <View style={{ flex: 1 }}>
+          <Text>Disconnected!</Text>
+          <Text>See you soon!</Text>
+          <Button title="Hide modal" onPress={toggleModal} />
+        </View>
+      </Modal>
+    );
   };
 
   return isLogged ? (
     <View style={styles.centeredView}>
-      <Button title="Connect" color="red" onPressOut={handleSubmit(onSubmit)} />
+      <Button title="Disconnect" color="red" onPress={onSubmit} />
     </View>
   ) : (
     <>
